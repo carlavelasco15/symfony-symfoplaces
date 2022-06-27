@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block title %}Página de usuario {{ app.user.displayname }} {% endblock %}
+
+{% block breadcrumb %}
+
+	{{parent()}}
+	<li class="breadcrumb-item active" aria-current="page">{{app.user.displayname}}<li>
+
+{% endblock %}
+
+{%  block main %}
+    {% if not app.user.isVerified %}
+    <div class="row alert alert-danger p-2" role="alert">
+        <p>La dirección de email {{ app.user.email }} <b>no ha sido verificada</b>.
+        Por favor haz clic en
+        <a href="{{ path('resend_verification') }}">verificar usuario </a> para completar
+        el proceso de registro y poder acceder a todas las funcionalidades de Symfofilms.</p>
+    </div>
+    {% endif %} 
+
+	{{ parent() }}
+	<h2>Home de {{app.user.displayname}}</h2>
+    <p>Esta es tu información de usuario.</p>
+    <div class="bg-light border row align-items-center justify-content-cnenter my-3">
+        <div class="col m-3 p-3 text-start">
+            <div class="my-2 p-2">
+                <h3>Datos</h3>
+                <p><b>#</b>: {{ app.user.id }}</p>	
+                <p><b>Nombre</b>: {{ app.user.displayname }}</p>	
+                <p><b>Email</b>: {{ app.user.email }}</p>	
+                <p><b>Teléfono</b>: {{ app.user.phone ?? 'Sin especificar' }}</p>	
+                <p><b>Ciudad</b>: {{ app.user.city ?? 'Sin especificar' }}</p>	
+                <p><b>Pais</b>: {{ app.user.pais ?? 'Sin especificar' }}</p>	
+            </div>
+            <div class="my-2 p-2">
+                <h3>Operaciones</h3>
+                <ul>
+                    <li><a href="#">Modificar mis datos</a>.</li>
+                    <li><a href="{{path('unsuscribe')}}">Baja de usuario</a>.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col m-3 p-3 text-center bg-light">
+            <img class="rounded border movie-cover" style="max-width: 240px"
+                alt="Foto de {{ app.user.displayname }}"
+                title="Foto de {{ app.user.displayname }}"
+                src="{{ app.user.fotografia?
+                    path('pic_show', {'fotografia': app.user.fotografia}) :
+                    path('pic_show', {'fotografia' : 'default.jpg'})}}">
+        </div>
+        </div>
+        <div class="my-4">
+            <h3>Aportaciones</h3>
+            {% set peliculas = app.user.getPeliculas() %}
+            <p>Este usuario ha añadido {{ peliculas|length }} películas a SymfoFilms.</p>
+
+            {% include '/includes/lista_peliculas.html.twig' %}
+        </div>    
+{% endblock %}

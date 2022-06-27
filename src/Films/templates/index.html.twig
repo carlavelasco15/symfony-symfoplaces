@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block title %}Catálogo de películas{% endblock %}
+
+{% block breadcrumb %}
+	{{parent()}}
+{% endblock %}
+
+{%  block main %}
+	{{ parent() }}
+	<p>Esta es la portada del sitio web <b>Symfofilms</b>.</p>
+	
+	<p>A lo largo de las próximas semanas iremos editando este ejemplo para dotarlo de nuevas características y funcionalidades.</p>
+	
+	
+	<div class="container my-5 d-flex">
+		{% for pelicula in peliculas %}
+			<figure class="m-2 col text-center">
+				<a href="{{ path('pelicula_show', {'id': pelicula.id}) }}">
+					<img class="img-fluid rounded w-90 h-100 d-inline-block" alt="Carátula de {{pelicula.titulo }}" 
+					src="{{ asset(covers_directory~'/'~pelicula.caratula) }}"
+					title="Carátula de {{ pelicula.titulo }}">
+				</a>
+				<figcaption>{{ pelicula.titulo }}</figcaption>
+			</figure>
+		{% endfor %}
+	</div>
+{% endblock %}
+
+
+
+
+
+
+

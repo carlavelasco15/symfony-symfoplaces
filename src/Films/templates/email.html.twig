@@ -1,0 +1,31 @@
+{% apply inline_css(
+    source('@styles/bootstrap.min.css'),
+    source('@styles/estilo.css')
+) %}
+
+{% block header %}
+<header class="row border bg-light m-3">
+    <div class="col-9 p-2">
+        <hgroup>
+            <h2>SymfoFilms</h2>
+            <h3>Página de cine, ejemplo de clase.</h3>
+        </hgroup>
+    </div>
+    <div class="col-3 p-2">
+        <img style="width: 100%" alt="Logo"
+            src="{{ email.image('@images/template/transparent.png')}}">
+    </div>
+</header>
+{% endblock %}
+
+<main>
+    {% block main %}{% endblock %}
+</main>
+
+    {% block footer %}
+        <footer class="page-footer p-2 m-0 mt-2 bg-light border" style="font-size: 0.8rem;">
+            <p class="m-2">Aplicación creada por Carla Velasco.</p>
+        </footer>
+    {% endblock %}
+
+{% endapply %}

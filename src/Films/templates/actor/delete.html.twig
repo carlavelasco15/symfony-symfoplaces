@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block title %}Borrado de actor <b>{{ actor.nombre }}{% endblock %}
+
+{% block breadcrumb %}
+	{{parent()}}
+    <li class="breadcrumb-item"><a href=" {{ path('actor_list') }}">Actores</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Eliminar {{actor.nombre}}</li>
+{% endblock %}
+
+{%  block main %}
+	{{ parent() }}
+	<p>Borrado de actor <b>{{ actor.nombre }}</b>.</p>
+	<p>Por favor, confirma la operación de borrado mediante el formulario.</p>
+	
+		{{ form(formulario) }}
+	
+{% endblock %}

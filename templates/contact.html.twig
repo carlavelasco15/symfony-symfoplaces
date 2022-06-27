@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block title %}Catálogo de películas{% endblock %}
+
+{% block breadcrumb %}
+
+	{{parent()}}
+	<li class="breadcrumb-item active" aria-current="page">Contacto<li>
+
+{% endblock %}
+
+{%  block main %}
+	{{ parent() }}
+	<p>{{contact}}</p>
+    {# <p>Contacta con <b>SymfoFilms</b>.</p> #}
+    <div class="bg-light border row align-items-center justify-content-center my-3 p-3">
+        <div class="col-6 p-2">
+            <h3>Contactar: </h3>
+            {{ form(formulario) }}
+        </div>
+        <div class="col-6 p-2 text-end">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2992.033950456337!2d2.130873115426688!3d41.416781679261526!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4981b5fdca4b1%3A0x35e8d1d280af19bd!2sCIFO%20Barcelona%20-%20La%20Violeta!5e0!3m2!1ses!2ses!4v1653985490547!5m2!1ses!2ses" allowfullscreen="" class="w-100 px-3" height="350px" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <p><b>CIFO Barcelona la Violeta</b></p>
+            <p>Carrer del Compte de Sert, 7, 08035 Barcelona</p>
+            <p>Aula I12 (Curs de Symfony)</p>
+            <p>tel: 932 54 17 00</p>
+        </div>
+    </div>	
+{% endblock %}

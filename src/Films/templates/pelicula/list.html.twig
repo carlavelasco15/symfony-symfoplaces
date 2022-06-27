@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block title %}Catálogo de películas{% endblock %}
+
+{% block breadcrumb %}
+
+	{{parent()}}
+	<li class="breadcrumb-item active" aria-current="page">Peliculas<li>
+
+{% endblock %}
+
+{%  block main %}
+	{{ parent() }}
+	<p>Listado de películas en <b>Symfofilms</b>.</p>
+	<p>A lo largo de las próximas semanas iremos editando este ejemplo para dotarlo de nuevas características y funcionalidades.</p>
+	
+	<h3>Películas</h3>
+
+	{# incluye la subvista con la lista de películas #}
+	{% include '/includes/lista_peliculas.html.twig'  %}
+
+
+	{# incluye la subvista con los enlaces de paginacion #}
+	{% 
+		include '/includes/paginator.html.twig' with
+			{
+				'route': 'pelicula_list',
+				'entidades': 'peliculas'
+			}
+	%}
+{% endblock %}
