@@ -19,7 +19,8 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Service\FileService;
 use Psr\Log\LoggerInterface;
 use App\Form\UserDeleteFormType;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -136,8 +137,11 @@ class RegistrationController extends AbstractController
     public function unsuscribe(Request $request,
                                 LoggerInterface $appUserInfoLogger,
                                 FileService $uploader,
-                                EntityManagerInterface $entityManager): Response 
+                                EntityManagerInterface $entityManager,
+                                SessionInterface $session,
+                                TokenStorageInterface $tokenStorageInterface): Response 
     {
+
        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
        $usuario = $this->getUser();
@@ -145,13 +149,11 @@ class RegistrationController extends AbstractController
        $formulario = $this->createForm(UserDeleteFormType::class, $usuario);
        $formulario->handleRequest($request);
 
-
-
        if($formulario->isSubmitted() && $formulario->isValid()) {
            $uploader->setTargetDirectory($this->getParameter('app.users_pics.root'));
 
            if($usuario->getPicture())
-            $uploader->remove($usuario->getPicture());
+                $uploader->remove($usuario->getPicture());
 
 
             /* foreach ($usuario->getPeliculas() as $pelicula) {
@@ -162,9 +164,8 @@ class RegistrationController extends AbstractController
             $entityManager->remove($usuario);
             $entityManager->flush();
 
-            $this->container->get('security.token_storage')->setToken(null);
-            /* TODO */
-           /*  $this->container->get('session')->invalidate(); */
+            $tokenStorageInterface->setToken(NULL);
+            $session->invalidate();
 
             $mensaje = 'Usuario ' . $usuario->getDisplayname(). ' eliminado correctament.';
             $this->addFlash('success', $mensaje);

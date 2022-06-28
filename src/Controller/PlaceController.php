@@ -2,11 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Picture;
 use App\Entity\Place;
 use App\Form\DeletePlaceFormType;
+use App\Form\PictureType;
 use App\Form\PlaceType;
+use App\Form\SearchFormType;
 use App\Service\PaginatorService;
 use App\Repository\PlaceRepository;
+use App\Service\SimpleSearchService;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +49,7 @@ class PlaceController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()) {
 
-            /* $actor->setUser($this->getUser()); */
+            $place->setUser($this->getUser());
 
             $placeRepository->add($place, true);
             $this->addFlash('success', 'Lugar guardado con éxito.');
@@ -57,6 +63,41 @@ class PlaceController extends AbstractController
     }
 
 
+    #[Route('/search', name: 'place_search', methods: ['GET', 'POST'])]
+    public function search(Request $request, SimpleSearchService $busqueda): Response
+    {
+        
+        $formulario = $this->createForm(SearchFormType::class, $busqueda, [
+            'field_choices' => [
+                'Nombre' => 'name',
+                'Tipo' => 'type',
+                'Valoración' => 'valoration',
+                'País' => 'country',
+                'Ciudad' => 'village'
+            ],
+            'order_choices' => [
+                'ID' => 'id',
+                'Título' => 'titulo',
+                'Nombre' => 'name',
+                'País' => 'country',
+                'Ciudad' => 'village',
+            ]
+            ]);
+
+        $formulario->get('campo')->setData($busqueda->campo);
+        $formulario->get('orden')->setData($busqueda->orden);
+
+        $formulario->handleRequest($request);
+
+        $places = $busqueda->search('App\Entity\Place');
+
+        return $this->renderForm("place/buscar.html.twig", [
+            "formulario" => $formulario,
+            "places" => $places
+        ]);
+    }
+
+
     #[Route('/edit/{id}', name: 'place_edit')]
     public function edit (
         Place $place,
@@ -64,20 +105,25 @@ class PlaceController extends AbstractController
         PlaceRepository $placeRepository): Response
     {
 
-        $form = $this->createForm(PlaceType::class, $place);
-        $form->handleRequest($request);
+        $formPlace = $this->createForm(PlaceType::class, $place);
+        $formPlace->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        $picture = new Picture();
+        $formPicture = $this->createForm(PictureType::class, $picture);
+
+        if($formPlace->isSubmitted() && $formPlace->isValid()) {
 
             $placeRepository->add($place, true);
             $this->addFlash('success', 'Lugar actualizado con éxito.');
 
             return $this->redirectToRoute('place_show', ['id' => $place->getId()]);
         }
+        
 
         return $this->render('place/edit.html.twig', [
-            'formulario' => $form->createView(),
-            'place' => $place
+            'formularioPlace' => $formPlace->createView(),
+            'formularioPicture' => $formPicture->createView(),
+            'place' => $place,
         ]);
     }
 
@@ -116,6 +162,55 @@ class PlaceController extends AbstractController
             'place' => $place
         ]);
     }
+
+    #[Route('/picture/add/{id<\d+>}', name: 'place_picture_add')]
+    public function addPicture(Place $place,
+                            Request $request,
+                            EntityManagerInterface $em,
+                            LoggerInterface $appInfoLogger):Response 
+    {
+
+        $picture = new Picture();
+        $formularioPicture = $this->createForm(PictureType::class, $picture);
+        $formularioPicture->handleRequest($request);
+
+        if($formularioPicture->isSubmitted() && $formularioPicture->isValid()) {
+
+            $picture->setPlace($place);
+
+            $em->persist($picture);
+            $em->flush();
+
+            $this->redirectToRoute('place_edit');
+        }
+
+        $mensaje = 'Imagen añadida con éxito.';
+        $this->addFlash('success', $mensaje);
+        $appInfoLogger->info($mensaje);
+
+        return $this->render('');
+    }
+   
+   
+    /* #[Route('/pelicula/removeactor/{pelicula<\d+>}/{actor<\d+>}', name: 'pelicula_remove_actor')]
+    public function removeActor(Pelicula $pelicula,
+                            Actor $actor,
+                            EntityManagerInterface $em,
+                            LoggerInterface $appInfoLogger):Response 
+    {
+
+        $this->denyAccessUnlessGranted('edit', $pelicula);
+
+        $pelicula->removeActore($actor);
+        $em->flush();
+
+        $mensaje = 'Actor '.$actor->getNombre();
+        $mensaje .= ' eliminado de '.$pelicula->getTitulo().' correctamente.';
+        $this->addFlash('success', $mensaje);
+        $appInfoLogger->info($mensaje);
+
+        return $this->redirectToRoute('pelicula_edit', ['id' => $pelicula->getId()]);
+    } */
 
 
 

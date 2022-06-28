@@ -3,13 +3,13 @@
 
 {% block breadcrumb %}
 	{{parent()}}
-    <li class="breadcrumb-item"><a href=" {{ path('pelicula_list') }}">Peliculas</a></li>
+    <li class="breadcrumb-item"><a href=" {{ path('place_list') }}">Lugares</a></li>
     <li class="breadcrumb-item active" aria-current="page">Buscar</li>
 {% endblock %}
 
 {%  block main %}
 	{{ parent() }}
-    <p>Búsqueda de películas en <b>SymfoFilms</b>.</p>
+    <p>Búsqueda de películas en <b>SymfoPlaces</b>.</p>
 
     <p>
         Indica los criterios de búsqueda en el formulario y presiona el botón <i>Buscar</i>.
@@ -33,6 +33,6 @@
     <h3>Resultados</h3>
 
 	{# incluye la subvista con la lista de películas #}
-	{% include '/includes/lista_peliculas.html.twig'  %}
+	{% include '/includes/lista_place.html.twig'  %}
 
 {% endblock %}

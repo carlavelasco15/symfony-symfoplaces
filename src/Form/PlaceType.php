@@ -22,7 +22,7 @@ class PlaceType extends AbstractType
             ->add('valoration', NumberType::class)
             ->add('country', TextType::class)
             ->add('village', TextType::class)
-            ->add('Crear', SubmitType::class)
+            ->add('Guardar', SubmitType::class)
         ;
     }
 

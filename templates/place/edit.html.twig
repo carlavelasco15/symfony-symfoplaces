@@ -7,7 +7,13 @@
     {{ parent() }}
     <p>Edición del lugar <b>{{place.name}}</b>.</p>
 
-    {{ form(formulario) }}
+    <h2 class="mt-3">Formulario place </h2>
+    {{ form(formularioPlace) }}
+
+    <h2 class="mt-5">Formulario picture</h2>
+    {{ form_start(formularioPicture, {'action': path('picture_create')}) }}
+        <input type="hidden" name="place_id" id="place_id" value={{place.id}}>
+    {{ form_end(formularioPicture) }}
     
     {# <a href="{{ path('place_list') }}">back to list</a> #}
 

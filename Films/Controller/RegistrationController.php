@@ -19,7 +19,8 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Service\FileService;
 use Psr\Log\LoggerInterface;
 use App\Form\UserDeleteFormType;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -135,7 +136,9 @@ class RegistrationController extends AbstractController
     #[Route('/unsuscribe', name: 'unsuscribe', methods: ['GET', 'POST'])]
     public function unsuscribe(Request $request,
                                 LoggerInterface $appUserInfoLogger,
-                                FileService $uploader): Response 
+                                FileService $uploader,
+                                SessionInterface $session,
+                                TokenStorageInterface $tokenStorageInterface): Response 
     {
        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -153,16 +156,16 @@ class RegistrationController extends AbstractController
             $uploader->remove($usuario->getFotografia());
 
 
-            foreach ($usuario->getPeliculas() as $pelicula) {
+            /* foreach ($usuario->getPeliculas() as $pelicula) {
                 $usuario->removePelicula($pelicula);
-            }
+            } */
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($usuario);
             $entityManager->flush();
 
-            $this->container->get('security.token_storage')->setToken(null);
-            $this->container->get('session')->invalidate();
+            $tokenStorageInterface->setToken(NULL);
+            $session->invalidate();
 
             $mensaje = 'Usuario ' . $usuario->getDisplayname(). ' eliminado correctament.';
             $this->addFlash('success', $mensaje);

@@ -11,6 +11,7 @@ use App\Entity\Picture;
 use App\Service\FileService;
 use App\Form\DeletePictureFormType;
 use App\Form\PictureType;
+use App\Repository\PlaceRepository;
 
 #[Route('/picture')]
 class PictureController extends AbstractController
@@ -23,36 +24,44 @@ class PictureController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/create', name: 'picture_create')]
     public function create(
         Request $request,
         PictureRepository $pictureRepository,
-        FileService $uploader): Response
+        FileService $uploader,
+        PlaceRepository $placeRepository): Response
     {
 
-        $place = new Picture();
-        $form = $this->createForm(PictureType::class, $place);
+        $picture = new Picture();
+        $form = $this->createForm(PictureType::class, $picture);
         $form->handleRequest($request);
+            
+        $place_id = $request->request->get('place_id');
+        $place = $placeRepository->find($place_id);
 
         if($form->isSubmitted() && $form->isValid()) {
 
             $file = $form->get('picture')->getData();
 
             if($file)
-                $place->setPicture($uploader->upload($file));
+                $picture->setPicture($uploader->upload($file));
 
-            /* $actor->setUser($this->getUser()); */
+            $picture->setPlace($place);
 
-            $pictureRepository->add($place, true);
+            $pictureRepository->add($picture, true);
             $this->addFlash('success', 'Imagen guardada con éxito.');
-
-            return $this->redirectToRoute('picture_show', ['id' => $place->getId()]);
+            
+        }else{
+            $this->addFlash('error', 'No se pudo añadir la imagen.');
         }
 
-        return $this->render('picture/create.html.twig', [
-            'formulario' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('place_edit', ['id' => $picture->getPlace()->getId()]);
     }
+
+
+
 
 
     #[Route('/edit/{id}', name: 'picture_edit')]

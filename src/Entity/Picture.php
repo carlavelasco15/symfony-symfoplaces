@@ -22,6 +22,9 @@ class Picture
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'photo')]
+    private $place;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Picture
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getPlace(): ?Place
+    {
+        return $this->place;
+    }
+
+    public function setPlace(?Place $place): self
+    {
+        $this->place = $place;
 
         return $this;
     }
