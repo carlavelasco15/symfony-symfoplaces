@@ -63,4 +63,16 @@ class PlaceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findLast(int $quantity=5, bool $cover= true):array {
+
+        return $this->getEntityManager()->createQuery(
+            "SELECT p
+            FROM App\Entity\Place p
+            ORDER BY p.id DESC"
+        )
+        ->setMaxResults($quantity)
+        ->getResult();
+        /* . ($cover? ' WHERE p.image IS NOT NULL': '') */
+    }
 }

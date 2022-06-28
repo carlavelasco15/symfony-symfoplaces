@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Eliminar{% endblock %}
+
+{% block main %}
+
+    {{ parent() }}
+    <p>¿Quieres eliminar la imagen <b>{{place.title}}</b>?</p>
+
+    {{ form(formulario) }}
+    
+    {# <a href="{{ path('place_list') }}">back to list</a> #}
+
+    {# <a href="{{ path('place_edit', {'id': place.id}) }}">edit</a> #}
+
+    {# {{ include('place/_delete_form.html.twig') }} #}
+{% endblock %}

@@ -13,9 +13,9 @@
                 <img class="rounded border movie-cover" style="max-width: 220px"
                     alt="Fotografía de {{ usuario.displayname }}"
                     title="Fotografía de {{ usuario.displayname }}"
-                    src="{{ usuario.fotografia ?
-                        path('pic_show', {'fotografia': usuario.fotografia}) :
-                        path('pic_show', {'fotografia': 'default.jpg'}) }}">
+                    src="{{ usuario.picture ?
+                        path('pic_show', {'picture': usuario.picture}) :
+                        path('pic_show', {'picture': 'default.jpg'}) }}">
             </figure>
         </div>
     </div>

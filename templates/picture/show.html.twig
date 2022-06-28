@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Place{% endblock %}
+
+{% block main %}
+    {{ parent() }}
+
+
+	<div class="bg-light border my-3 p-3 row align-items-center justify-content-center">
+
+	<div class="col m-3 p-3 text-start">
+			<p><b>ID</b>: {{ place.id }}</p>
+			<p><b>Description</b>: {{ place.description }}</p>
+			<p><b>Title</b>: {{ place.title }}</p>		
+	</div>
+
+	<div class="col m-3 p-3 text-center bg-light">
+		<img class="rounded border movie-cover" style="max-width: 240px"
+			alt="Carátula de {{place.title}}"
+			title="Carátula de {{place.title}}"
+			src="{{ asset(picture_directory~'/'~(place.picture ?? 'default.jpg'))}}">
+	</div>
+
+
+    <a href="{{ path('picture_list') }}">back to list</a>
+
+    <a href="{{ path('picture_edit', {'id': place.id}) }}">edit</a>
+
+    {# {{ include('place/_delete_form.html.twig') }} #}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Place index{% endblock %}
+
+{% block main %}
+    {{ parent() }}
+    <h1>picture index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Picture</th>
+                <th>Description</th>
+                <th>Title</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for place in places %}
+            <tr>
+                <td>{{ place.id }}</td>
+                <td class="text-center">
+                    <a href="{{ path('picture_show', {'id': place.id}) }}">
+                        <img class="lista-cover rounded" style="max-width: 100px;"
+                            alt="Carátula de {{ place.title }}"
+                            title="Carátula de {{ place.title }}"
+                            src=" {{ asset(picture_directory~'/'~(place.picture ?? 'default.jpg'))}}">
+                    </a>
+                </td>
+                <td>{{ place.description }}</td>
+                <td>{{ place.title }}</td>
+                <td>
+                    <a href="{{ path('picture_show', {'id': place.id}) }}">show</a>
+                    <a href="{{ path('picture_edit', {'id': place.id}) }}">edit</a>
+                    <a href="{{ path('picture_delete', {'id': place.id}) }}">delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('picture_create') }}">Create new</a>
+{% endblock %}

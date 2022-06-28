@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Place;
 use App\Form\DeletePlaceFormType;
 use App\Form\PlaceType;
+use App\Service\PaginatorService;
 use App\Repository\PlaceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +15,19 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/place')]
 class PlaceController extends AbstractController
 {
-    #[Route('s/', name: 'place_list', methods: ['GET'])]
-    public function index(PlaceRepository $placeRepository): Response
+    #[Route('s/{pagina}', defaults: ['pagina'=>1], name: 'place_list', methods: ['GET'])]
+    public function index(
+        int $pagina=1,
+        PlaceRepository $placeRepository,
+        PaginatorService $paginator): Response
     {
+
+        $paginator->setEntityType('App\Entity\Place');
+        $places = $paginator->findAllEntities($pagina);
+
         return $this->render('place/index.html.twig', [
-            'places' => $placeRepository->findAll(),
+            'places' => $places,
+            'paginator' => $paginator
         ]);
     }
 
@@ -89,7 +98,7 @@ class PlaceController extends AbstractController
             $placeRepository->remove($place, true);
             $this->addFlash('success', "S'ha eliminat el lloc (i les imatges i comentaris relacionats) correctament.");
 
-            return $this->redirectToRoute('place_show', ['id' => $place->getId()]);
+            return $this->redirectToRoute('place_list');
         }
 
         return $this->render('place/delete.html.twig', [

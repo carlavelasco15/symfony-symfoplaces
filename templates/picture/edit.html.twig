@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar{% endblock %}
+
+{% block main %}
+
+    {{ parent() }}
+    <p>Edición del lugar <b>{{place.title}}</b>.</p>
+
+    <div class="bg-light border row align-items-center justify-content-center my-3 p-5">
+
+
+		<div class="col-6">
+
+            {{ form(formulario) }}
+
+        </div>
+			
+
+    	<div class="col-6 text-center">
+			<figure class="my-2 p-2">
+				<img class="rounded border movie-cover" style="max-width: 220px"
+					alt="Carátula de {{place.title}}"
+					title= "Carátula de {{place.title}}"
+					src="{{asset(picture_directory~'/'~(place.picture ?? 'default.jpg'))}}">
+
+				{% if place.picture %}
+				<figcaption class="my-3 text-center">
+					Borrar esta Carátula
+					{# <a href="{{path('pelicula_delete_cover', {'id': place.id})}}">
+						<img src="{{asset('images/buttons/delete.png')}}" height="30" width="30"
+							alt="Borrar carátula" title="Borrar carátula">
+					</a> #}
+				</figcaption>
+				{% endif %}
+			</figure>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    {# <a href="{{ path('place_list') }}">back to list</a> #}
+
+    {# <a href="{{ path('place_edit', {'id': place.id}) }}">edit</a> #}
+
+    {# {{ include('place/_delete_form.html.twig') }} #}
+{% endblock %}

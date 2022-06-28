@@ -35,7 +35,7 @@
             <div class="my-2 p-2">
                 <h3>Operaciones</h3>
                 <ul>
-                    <li><a href="#">Modificar mis datos</a>.</li>
+                    {# <li><a href="{{ path('') }}">Modificar mis datos</a>.</li> #}
                     <li><a href="{{path('unsuscribe')}}">Baja de usuario</a>.</li>
                 </ul>
             </div>
@@ -44,16 +44,16 @@
             <img class="rounded border movie-cover" style="max-width: 240px"
                 alt="Foto de {{ app.user.displayname }}"
                 title="Foto de {{ app.user.displayname }}"
-                src="{{ app.user.fotografia?
-                    path('pic_show', {'fotografia': app.user.fotografia}) :
-                    path('pic_show', {'fotografia' : 'default.jpg'})}}">
+                src="{{ app.user.picture?
+                    path('pic_show', {'picture': app.user.picture}) :
+                    path('pic_show', {'picture' : 'default.jpg'})}}">
         </div>
         </div>
         <div class="my-4">
             <h3>Aportaciones</h3>
-            {% set peliculas = app.user.getPeliculas() %}
+            {# {% set peliculas = app.user.getPeliculas() %}
             <p>Este usuario ha añadido {{ peliculas|length }} películas a SymfoFilms.</p>
 
-            {% include '/includes/lista_peliculas.html.twig' %}
+            {% include '/includes/lista_peliculas.html.twig' %} #}
         </div>    
 {% endblock %}

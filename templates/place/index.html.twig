@@ -3,6 +3,7 @@
 {% block title %}Place index{% endblock %}
 
 {% block main %}
+    {{ parent() }}
     <h1>Place index</h1>
 
     <table class="table">
@@ -41,6 +42,15 @@
         {% endfor %}
         </tbody>
     </table>
+
+    {%
+        include '/includes/paginator.html.twig' with
+        {
+            'route' : 'place_list',
+            'entidades' : 'lugares'
+        }
+
+    %}
 
     <a href="{{ path('place_create') }}">Create new</a>
 {% endblock %}

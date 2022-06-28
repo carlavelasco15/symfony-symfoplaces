@@ -10,6 +10,9 @@ twig:
         'bootstrap_5_layout.html.twig'
         ]
 
+    globals:
+        picture_directory: '%app.pictures%'
+
 when@test:
     twig:
         strict_variables: true

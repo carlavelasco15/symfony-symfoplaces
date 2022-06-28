@@ -3,7 +3,7 @@
     <head>
 		{% block login %}
 
-			{# {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+			{% if is_granted("IS_AUTHENTICATED_FULLY") %}
 				<div class="my-1 text-end">
 					<a href="{{ path('home') }}">
 						{{ app.user.displayname }}
@@ -12,8 +12,8 @@
 					-
 					<a href="{{ path('app_logout') }}">Logout</a>
 				</div>
-			{% else %} #}
-				{# <div class="my-1 text-end">
+			{% else %}
+				<div class="my-1 text-end">
 					<a style="vertical-align: middle" href="{{ path('app_login') }}">
 						LogIn
 						<img src="{{ asset('images/buttons/login.png') }}"
@@ -25,8 +25,8 @@
 						<img src="{{ asset('images/buttons/register.png') }}"
 							alt="register" height="25" width="25">
 					</a>
-				</div> #}
-		{# 	{% endif %} #}
+				</div>
+			{% endif %}
 		{% endblock %}
     	
 		{% block head %}
@@ -67,7 +67,7 @@
 
     				<li class="nav-item mr-2">
     					<a class="nav-link"
-						 href="{# {{ path('portada') }} #}">Inicio</a>
+						 href="{{ path('portada') }}">Inicio</a>
     				</li>
 
 
@@ -82,25 +82,9 @@
 							{# {% endif %} #}
 							{# <a class="dropdown-item" href="{{ path('place_search') }}">Buscar lugares</a> #}
 						</ul>
-					</li>
-
-
-					<li role="presentation" class="dropdown">	
-						<a role="button" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Actores
-						</a>
-						<ul class="dropdown-menu">
-							<a class="dropdown-item" href="{# {{ path('actor_list') }} #}">Lista de actores</a>
-							{# {% if is_granted('create', entityFaker.getMock('Pelicula')) %} #}
-								<a class="dropdown-item" href="{# {{ path('actor_create') }} #}">Nuevo actor</a>
-							{# {% endif %} #}
-							<a class="dropdown-item" href="{# {{ path('actor_search') }} #}">Buscar actor</a>
-						</ul>
-					</li>	
-
-			
+					</li>			
     				<li class="nav-item mr-2">
-    					<a class="nav-link" href="{# {{ path('contacto') }} #}">Contacto</a>
+    					<a class="nav-link" href="{{ path('contact') }}">Contacto</a>
     				</li>    				   				
     			</ul>
     		</nav>

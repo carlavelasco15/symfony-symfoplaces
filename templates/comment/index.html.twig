@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Place index{% endblock %}
+
+{% block main %}
+    {{ parent() }}
+    <h1>Place index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for place in places %}
+            <tr>
+                <td>{{ place.id }}</td>
+                <td>{{ place.description }}</td>
+                <td>{{ place.date|date('d/m/Y') }}</td>
+                <td>
+                   {#  <a href="{{ path('place_show', {'id': place.id}) }}">show</a>
+                    <a href="{{ path('place_edit', {'id': place.id}) }}">edit</a>
+                    <a href="{{ path('place_delete', {'id': place.id}) }}">delete</a> #}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('comment_create') }}">Create new</a>
+{% endblock %}

@@ -7,14 +7,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ContactoFormType;
-
+use App\Repository\PlaceRepository;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
-class DummyController extends AbstractController
+class DefaultController extends AbstractController
 {
+
     #[Route('/contacto', name: 'contact')]
     public function contact(
         Request $request,
@@ -44,12 +45,20 @@ class DummyController extends AbstractController
             $mailer->send($email);
 
             $this->addFlash('success', 'Mensaje enviado correctamente.');
-            return $this->redirectToRoute('place_list');
+            return $this->redirectToRoute('portada');
         }
 
         return $this->renderForm('contact.html.twig', [
             'formulario' => $formulario,
-            'contact' => "Contacto con plantilla"
         ]);
     }
+
+    #[Route('/', name: 'portada')]
+    public function index(PlaceRepository $pR):Response
+    {
+        return $this->render('index.html.twig', [
+            'peliculas' => $pR->findLast($this->getParameter('app.portada_results'))
+        ]);
+    }
+   
 }
