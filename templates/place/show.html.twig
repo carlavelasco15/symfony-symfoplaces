@@ -48,7 +48,7 @@
 
 {% set pictures = place.getPhoto() %}
 {% if pictures|length > 0 %}
-	<div class="my-5">
+	<div class="my-3">
             <h4 class="my-3">Imagenes de este lugar</h4>
             <div class="d-flex flex-row flex-wrap">
                 {% for picture in pictures %}
@@ -67,22 +67,31 @@
 {% endif %}
 
 {% set comments = place.getComment() %}
-	<div class="my-5">
-            <h4 class="my-3">Comentarios</h4>
+	<div class="my-3">
+            <h4 class="my-2">Comentarios</h4>
 
 			{% if comments|length > 0 %}
                {% for comment in comments %}
-                    <div class="card mx-2 my-3 py-3 w-75">
+                    <div class="card mx-2 my-4 py-3 w-75">
                         <div class="card-body">
-                            <h5 class="card-title">{{comment.getUser().displayname}}</h5>
+						{% if (comment.getUser()) %}
+                            <h5 class="card-title"> {{comment.getUser().displayname}}</h5>
+						{% else %}
+                            <h5 class="card-title">Anónimo</h5>
+						{% endif %}
                             <p class="card-text">{{comment.description}}</p>
 							<p style="font-size: 14px; text-align: right; margin: 0px;">{{comment.date|date('d/m/Y')}}</p>
-							<a href="{{ path('comment_edit', {'id': 1}) }}" class="btn btn-warning">Editar</a>
-							<a href="{{ path('comment_delete', {'id': 1}) }}" class="btn btn-danger">Eliminar</a>
+							{% if is_granted('edit', comment) %}
+								<a href="{{ path('comment_edit', {'id': comment.id}) }}" class="btn btn-warning">Editar</a>
+								<a href="{{ path('comment_delete', {'id': comment.id}) }}" class="btn btn-danger">Eliminar</a>
+							{% endif %}
                         </div>
                     </div>
                 {% endfor %}
+			{% else %}
+				<p class="my-3">No hay comentarios</p>
 			{% endif %}
+			{% if is_granted('create', entityFaker.getMock('Comment')) %}
 				<div class="mx-2 my-3 w-75">
             	<h5 class="mt-5">¡Escribe tu comentario!</h5>
 					{{form_start(commentForm, {'action': path('comment_create')})}}
@@ -90,6 +99,7 @@
 						{{form(commentForm)}}
 					{{form_end(commentForm)}}
 				</div>
+			{% endif %}
         </div>
 
 	<div class="text-center">
@@ -97,19 +107,19 @@
 			<img height="40" src="{{ asset('images/buttons/list.png') }}"
 			alt="Lista" title="Volver al listado"></a>
 		</a>
-		{# {% if is_granted('edit', pelicula) %} #}
+		{% if is_granted('edit', place) %}
 			<a href="{{ path('place_edit', {'id':place.id}) }}">
 				<img height="40" src="{{ asset('images/buttons/update.png') }}"
 				alt="Modificar" title="Modificar"></a>
 			</a>
-		{# {% endif %} #}
+		{% endif %}
 
-		{# {% if is_granted('delete', place) %} #}
+		{% if is_granted('delete', place) %}
 			<a href="{{  path('place_delete', {'id':place.id}) }}">
 				<img height="40" src="{{ asset('images/buttons/delete.png') }}"
 				alt="Borrar" title="Borrar"></a>
 			</a>
-		{# {% endif %} #}
+		{% endif %}
 	</div>
 
 {% endblock %}

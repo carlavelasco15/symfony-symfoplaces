@@ -13,16 +13,21 @@
 	
 	
 	<div class="container my-5 d-flex">
-	{# 	{% for place in places %}
+	{% if places|length > 0 %}
+		{% for place in places %}
 			<figure class="m-2 col text-center">
 				<a href="{{ path('place_show', {'id': place.id}) }}">
-					<img class="img-fluid rounded w-90 h-100 d-inline-block" alt="Carátula de {{place.titulo }}" 
-					src="{{ asset(covers_directory~'/'~place.caratula) }}"
-					title="Carátula de {{ place.titulo }}">
+					<img class="img-fluid rounded w-90 h-100 d-inline-block" style="max-height: 200px;" alt="Carátula de {{place.name }}" 
+					src="{{ asset(picture_directory~'/'~(place.getPhoto()[0].picture ?? 'default.jpg'))}}"
+					title="Carátula de {{ place.name }}">
 				</a>
-				<figcaption>{{ place.titulo }}</figcaption>
+				<figcaption>{{ place.name }}</figcaption>
 			</figure>
-		{% endfor %} #}
+		{% endfor %}
+	{% else %}
+	<p>No hay lugares por ahora</p>
+
+	{% endif %}
 	</div>
 {% endblock %}
 

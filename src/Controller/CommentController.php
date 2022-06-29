@@ -16,13 +16,6 @@ use App\Repository\PlaceRepository;
 #[Route('/comment')]
 class CommentController extends AbstractController
 {
-    #[Route('s/', name: 'comment_list', methods: ['GET'])]
-    public function index(CommentRepository $commentRepository): Response
-    {
-        return $this->render('comment/index.html.twig', [
-            'places' => $commentRepository->findAll(),
-        ]);
-    }
 
     #[Route('/create', name: 'comment_create')]
     public function create(
@@ -32,6 +25,7 @@ class CommentController extends AbstractController
     {
 
         $place = new Comment();
+        $this->denyAccessUnlessGranted('create', $place);
         $form = $this->createForm(CommentType::class, $place);
         $form->handleRequest($request);
 
@@ -61,8 +55,8 @@ class CommentController extends AbstractController
         Request $request,
         CommentRepository $commentRepository): Response
     {
+        $this->denyAccessUnlessGranted('edit', $place);
         $form = $this->createForm(CommentType::class, $place);
-
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -70,13 +64,14 @@ class CommentController extends AbstractController
             $commentRepository->add($place, true);
             $this->addFlash('success', 'Comentario actualizado con éxito.');
 
-            return $this->redirectToRoute('comment_show', ['id' => $place->getId()]);
+            return $this->redirectToRoute('place_show', ['id' => $place->getPlace()->getId()]);
         }
 
         return $this->render('comment/edit.html.twig', [
-            'formulario' => $form->createView(),
-            'place' => $place
+            'comment' => $place,
+            'formulario' => $form->createView()
         ]);
+
     }
 
 
@@ -87,6 +82,7 @@ class CommentController extends AbstractController
         CommentRepository $commentRepository
         ): Response
     {
+        $this->denyAccessUnlessGranted('delete', $place);
         $form = $this->createForm(DeleteCommentFormType::class, $place);
 
         $form->handleRequest($request);
@@ -96,21 +92,11 @@ class CommentController extends AbstractController
             $commentRepository->remove($place, true);
             $this->addFlash('success', "S'ha eliminat el comentari correctament.");
 
-            return $this->redirectToRoute('comment_list');
+            return $this->redirectToRoute('place_show', ['id' => $place->getPlace()->getId()]);
         }
 
         return $this->render('comment/delete.html.twig', [
             'formulario' => $form->createView(),
-            'place' => $place
-        ]);
-    }
-
-
-    #[Route('/show/{id}', name: 'comment_show')]
-    public function show(
-        Comment $place): Response
-    {
-        return $this->render('comment/show.html.twig', [
             'place' => $place
         ]);
     }

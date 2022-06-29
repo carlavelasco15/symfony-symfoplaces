@@ -21,17 +21,17 @@
 			<img height="40" src="{{ asset('images/buttons/list.png') }}"
 			alt="Lista" title="Volver al listado"></a>
 		</a>
-		{# {% if is_granted('edit', pelicula) %} #}
+		{% if is_granted('edit', place) %}
 			<a href="{{ path('place_show', {'id':place.id}) }}">
 				<img height="40" src="{{ asset('images/buttons/show.png') }}"
 				alt="Detalle" title="Detalle"></a>
 			</a>
-		{# {% endif %} #}
+		{% endif %}
 
-		{# {% if is_granted('edit', pelicula) %} #}
+		{% if is_granted('edit', place) %}
 			<a href="{{ path('place_edit', {'id':place.id}) }}">
 				<img height="40" src="{{ asset('images/buttons/update.png') }}"
 				alt="Modificar" title="Modificar"></a>
 			</a>
-		{# {% endif %} #}
+		{% endif %}
 {% endblock %}

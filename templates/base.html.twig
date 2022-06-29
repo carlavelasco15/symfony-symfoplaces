@@ -48,11 +48,11 @@
     	<header class="p-3 border bg-light justify-content-center d-flex">
 				<hgroup class="col-8">
 					<h1>SymfoPlaces</h1>
-					<h2>Página de ligares, recorre el mundo.</h2>
+					<h2>Página de lugares, recorre el mundo.</h2>
 				{# <p style="font-style:italic">"{{ frase.getFraseAleatoria() }}"</p> #}
 				</hgroup>
 				<figure class="col-4 text-end ">
-					<a href="{# {{ path('portada') }} #}">
+					<a href="{{ path('portada') }}">
 						<img class="h-auto w-50" styles="height: 30px" alt="Logo" src="/images/template/place.png">
 				
 					</a>
@@ -78,9 +78,9 @@
 						<ul class="dropdown-menu">
 							<a class="dropdown-item" href="{{ path('place_list') }}">Lista de lugares</a>
 							<a class="dropdown-item" href="{{ path('place_search') }}">Buscar lugares</a>
-							{# {% if is_granted('create', entityFaker.getMock('Pelicula')) %} #}
+							{% if is_granted('create', entityFaker.getMock('Place')) %}
 								<a class="dropdown-item" href="{{ path('place_create') }}">Nuevo lugar</a>
-							{# {% endif %} #}
+							{% endif %}
 						</ul>
 					</li>			
     				<li class="nav-item mr-2">

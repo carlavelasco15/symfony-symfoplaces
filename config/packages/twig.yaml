@@ -13,6 +13,8 @@ twig:
     globals:
         picture_directory: '%app.pictures%'
 
+        entityFaker: '@App\Service\EntityFakerService'
+
 when@test:
     twig:
         strict_variables: true

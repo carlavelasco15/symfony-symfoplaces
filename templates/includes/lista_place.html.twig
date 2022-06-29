@@ -6,9 +6,11 @@
                         </div>
                         <div class="card-body">
                              <a href="{{ path('place_show', {'id': place.id}) }}" ><h5 class="card-title">{{place.name}}</h5></a>
-                            <p class="card-text">{{place.description}}</p>
-                            <a href="{{ path('place_edit', {'id': place.id}) }}" class="btn btn-warning">Editar</a>
-                            <a href="{{ path('place_delete', {'id': place.id}) }}" class="btn btn-danger">Eliminar</a>
+                            <p class="card-text">{{place.country    }}</p>
+                            {% if is_granted('edit', place) %}
+                                <a href="{{ path('place_edit', {'id': place.id}) }}" class="btn btn-warning">Editar</a>
+                                <a href="{{ path('place_delete', {'id': place.id}) }}" class="btn btn-danger">Eliminar</a>
+                            {% endif %}
                         </div>
                     </div>
         {% else %}

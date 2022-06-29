@@ -19,6 +19,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use App\Service\FileService;
 use Psr\Log\LoggerInterface;
 use App\Form\UserDeleteFormType;
+use App\Repository\CommentRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -139,7 +140,8 @@ class RegistrationController extends AbstractController
                                 FileService $uploader,
                                 EntityManagerInterface $entityManager,
                                 SessionInterface $session,
-                                TokenStorageInterface $tokenStorageInterface): Response 
+                                TokenStorageInterface $tokenStorageInterface,
+                                CommentRepository $commentRepository): Response 
     {
 
        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -155,6 +157,10 @@ class RegistrationController extends AbstractController
            if($usuario->getPicture())
                 $uploader->remove($usuario->getPicture());
 
+                
+            foreach ($usuario->getComments() as $comment) {
+                $usuario->removeComment($comment);
+            }
 
             foreach ($usuario->getPlaces() as $pelicula) {
                 $usuario->removePlace($pelicula);

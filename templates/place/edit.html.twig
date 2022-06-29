@@ -67,8 +67,16 @@
 <div class="text-center">
 	<a href="{{ path('place_list') }}">
 		<img height="40" src="{{ asset('images/buttons/list.png') }}" alt="Lista" title="Volver al listado"></a>
-</a>
-{# {% if is_granted('edit', pelicula) %} #}
+	</a>
+{% if is_granted('edit', place) %}
 <a href="{{ path('place_show', {'id':place.id}) }}">
-	<img height="40" src="{{ asset('images/buttons/show.png') }}" alt="Detalle" title="Detalle"></a></a>{# {% endif %} #}{# {% if is_granted('delete', place) %} #}<a href="{{ path('place_delete', {'id':place.id}) }}">
-<img height="40" src="{{ asset('images/buttons/delete.png') }}" alt="Borrar" title="Borrar"></a></a>{# {% endif %} #}</div>{% endblock %}
+	<img height="40" src="{{ asset('images/buttons/show.png') }}" alt="Detalle" title="Detalle">
+</a>
+{% endif %}
+{% if is_granted('delete', place) %}
+	<a href="{{ path('place_delete', {'id':place.id}) }}">
+		<img height="40" src="{{ asset('images/buttons/delete.png') }}" alt="Borrar" title="Borrar">
+		</a>
+{% endif %}
+</div>
+{% endblock %}

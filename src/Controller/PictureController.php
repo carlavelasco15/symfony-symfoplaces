@@ -34,23 +34,25 @@ class PictureController extends AbstractController
     {
 
         $picture = new Picture();
+        $this->denyAccessUnlessGranted('create', $picture);
+
         $form = $this->createForm(PictureType::class, $picture);
         $form->handleRequest($request);
             
         $place_id = $request->request->get('place_id');
         $place = $placeRepository->find($place_id);
-
+        
+        $file = $form->get('picture')->getData();
+        
+        if($file)
+        $picture->setPicture($uploader->upload($file));
+        
+        $picture->setPlace($place);
+        
+        $pictureRepository->add($picture, true);
+        $this->addFlash('success', 'Imagen guardada con éxito.');
         if($form->isSubmitted() && $form->isValid()) {
-
-            $file = $form->get('picture')->getData();
-
-            if($file)
-                $picture->setPicture($uploader->upload($file));
-
-            $picture->setPlace($place);
-
-            $pictureRepository->add($picture, true);
-            $this->addFlash('success', 'Imagen guardada con éxito.');
+            
             
         }else{
             $this->addFlash('error', 'No se pudo añadir la imagen.');
@@ -70,6 +72,8 @@ class PictureController extends AbstractController
         PictureRepository $pictureRepository,
         FileService $uploader): Response
     {
+        $this->denyAccessUnlessGranted('edit', $place);
+
         $fichero = $place->getPicture();
         
         $form = $this->createForm(PictureType::class, $place);
@@ -105,6 +109,8 @@ class PictureController extends AbstractController
         PictureRepository $pictureRepository,
         FileService $uploader): Response
     {
+        $this->denyAccessUnlessGranted('delete', $place);
+
         $form = $this->createForm(DeletePictureFormType::class, $place);
         $form->handleRequest($request);
 
@@ -139,14 +145,6 @@ class PictureController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{id}', name: 'picture_delete_cover')]
-    public function deleteImagen(
-        Picture $place): Response
-    {
-        return $this->render('picture/show.html.twig', [
-            'place' => $place
-        ]);
-    }
 
 
     #[Route('/picture/cover/delete/{id}', name: 'picture_delete_cover')]
@@ -156,6 +154,7 @@ class PictureController extends AbstractController
         FileService $fileService,
         PictureRepository $pictureRepository
     ):Response {
+        $this->denyAccessUnlessGranted('delete', $picture);
         
         if($pic = $picture->getPicture()) {
             $fileService->remove($pic);

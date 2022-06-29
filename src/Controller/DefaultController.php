@@ -57,7 +57,7 @@ class DefaultController extends AbstractController
     public function index(PlaceRepository $pR):Response
     {
         return $this->render('index.html.twig', [
-            'peliculas' => $pR->findLast($this->getParameter('app.portada_results'))
+            'places' => $pR->findLast($this->getParameter('app.portada_results'))
         ]);
     }
    

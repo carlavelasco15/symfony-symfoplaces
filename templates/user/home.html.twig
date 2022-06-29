@@ -51,7 +51,7 @@
         <div class="my-5">
             <h3>Aportaciones</h3>
             {% set places = app.user.getPlaces() %}
-            <p class="mb-5">Este usuario ha añadido {{ places|length }} películas a SymfoPlaces.</p>
+            <p class="mb-2">Este usuario ha añadido {{ places|length }} películas a SymfoPlaces.</p>
             {# include place-list #}
             {% include '/includes/lista_place.html.twig' %}
         </div>    

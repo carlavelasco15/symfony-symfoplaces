@@ -50,6 +50,7 @@ class PlaceController extends AbstractController
     {
 
         $place = new Place();
+        $this->denyAccessUnlessGranted('create', $place);
         $form = $this->createForm(PlaceType::class, $place);
         $form->handleRequest($request);
 
@@ -112,6 +113,7 @@ class PlaceController extends AbstractController
         PlaceRepository $placeRepository): Response
     {
 
+        $this->denyAccessUnlessGranted('edit', $place);
         $formPlace = $this->createForm(PlaceType::class, $place);
         $formPlace->handleRequest($request);
 
@@ -141,21 +143,24 @@ class PlaceController extends AbstractController
         Request $request,
         PlaceRepository $placeRepository,
         PictureRepository $pictureRepository,
-        FileService $uploader
+        FileService $uploader,
+        CommentRepository $commentRepository
         ): Response
     {
-
+        $this->denyAccessUnlessGranted('delete', $place);
         $form = $this->createForm(DeletePlaceFormType::class, $place);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
 
             foreach ($place->getPhoto() as $picture) {
-
                 if($picture->getPicture())
                     $uploader->remove($picture->getPicture());
-
                 $pictureRepository->remove($picture, true);
+            }
+
+            foreach ($place->getComment() as $comment) {
+                $commentRepository->remove($comment, true);
             }
 
             $placeRepository->remove($place, true);
@@ -199,6 +204,7 @@ class PlaceController extends AbstractController
                             LoggerInterface $appInfoLogger):Response 
     {
 
+        $this->denyAccessUnlessGranted('edit', $place);
         $picture = new Picture();
         $formularioPicture = $this->createForm(PictureType::class, $picture);
         $formularioPicture->handleRequest($request);
@@ -220,27 +226,4 @@ class PlaceController extends AbstractController
         return $this->render('');
     }
    
-   
-    /* #[Route('/pelicula/removeactor/{pelicula<\d+>}/{actor<\d+>}', name: 'pelicula_remove_actor')]
-    public function removeActor(Pelicula $pelicula,
-                            Actor $actor,
-                            EntityManagerInterface $em,
-                            LoggerInterface $appInfoLogger):Response 
-    {
-
-        $this->denyAccessUnlessGranted('edit', $pelicula);
-
-        $pelicula->removeActore($actor);
-        $em->flush();
-
-        $mensaje = 'Actor '.$actor->getNombre();
-        $mensaje .= ' eliminado de '.$pelicula->getTitulo().' correctamente.';
-        $this->addFlash('success', $mensaje);
-        $appInfoLogger->info($mensaje);
-
-        return $this->redirectToRoute('pelicula_edit', ['id' => $pelicula->getId()]);
-    } */
-
-
-
 }
