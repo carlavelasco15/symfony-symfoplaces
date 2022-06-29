@@ -6,10 +6,13 @@ use App\Entity\Picture;
 use App\Entity\Place;
 use App\Form\DeletePlaceFormType;
 use App\Form\PictureType;
+use App\Form\CommentType;
 use App\Form\PlaceType;
 use App\Form\SearchFormType;
+use App\Repository\PictureRepository;
 use App\Service\PaginatorService;
 use App\Repository\PlaceRepository;
+use App\Service\FileService;
 use App\Service\SimpleSearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -17,6 +20,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Comment;
+use App\Repository\CommentRepository;
 
 #[Route('/place')]
 class PlaceController extends AbstractController
@@ -40,7 +45,8 @@ class PlaceController extends AbstractController
     #[Route('/create', name: 'place_create')]
     public function create(
         Request $request,
-        PlaceRepository $placeRepository): Response
+        PlaceRepository $placeRepository,
+        LoggerInterface $appInfoLogger): Response
     {
 
         $place = new Place();
@@ -52,8 +58,9 @@ class PlaceController extends AbstractController
             $place->setUser($this->getUser());
 
             $placeRepository->add($place, true);
-            $this->addFlash('success', 'Lugar guardado con éxito.');
-
+            $mensaje = "Lugar ". $place->getId() . " guardado con éxito.";
+            $this->addFlash('success', $mensaje);
+            $appInfoLogger->info($mensaje);
             return $this->redirectToRoute('place_show', ['id' => $place->getId()]);
         }
 
@@ -132,7 +139,9 @@ class PlaceController extends AbstractController
     public function delete(
         Place $place,
         Request $request,
-        PlaceRepository $placeRepository
+        PlaceRepository $placeRepository,
+        PictureRepository $pictureRepository,
+        FileService $uploader
         ): Response
     {
 
@@ -140,6 +149,14 @@ class PlaceController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+
+            foreach ($place->getPhoto() as $picture) {
+
+                if($picture->getPicture())
+                    $uploader->remove($picture->getPicture());
+
+                $pictureRepository->remove($picture, true);
+            }
 
             $placeRepository->remove($place, true);
             $this->addFlash('success', "S'ha eliminat el lloc (i les imatges i comentaris relacionats) correctament.");
@@ -156,10 +173,22 @@ class PlaceController extends AbstractController
 
     #[Route('/show/{id}', name: 'place_show')]
     public function show(
-        Place $place): Response
+        Place $place,
+        Request $request,
+        CommentRepository $commentRepository): Response
     {
+        $comment = new Comment();
+        $commentForm = $this->createForm(CommentType::class, $comment);
+        $commentForm->handleRequest($request);
+
+        if($commentForm->isSubmitted() && $commentForm->isValid()) {
+
+            $commentRepository($comment, true);
+        }
+
         return $this->render('place/show.html.twig', [
-            'place' => $place
+            'place' => $place,
+            'commentForm' => $commentForm->createView()
         ]);
     }
 

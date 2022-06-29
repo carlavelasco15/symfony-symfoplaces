@@ -2,6 +2,12 @@
 
 {% block title %}Eliminar{% endblock %}
 
+{% block breadcrumb %}
+	{{parent()}}
+    <li class="breadcrumb-item"><a href=" {{ path('place_list') }}">Lugares</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Eliminar {{place.name}}</li>
+{% endblock %}
+
 {% block main %}
 
     {{ parent() }}
@@ -9,9 +15,23 @@
 
     {{ form(formulario) }}
     
-    {# <a href="{{ path('place_list') }}">back to list</a> #}
 
-    {# <a href="{{ path('place_edit', {'id': place.id}) }}">edit</a> #}
+     	<div class="text-center">
+		<a href="{{  path('place_list') }}">
+			<img height="40" src="{{ asset('images/buttons/list.png') }}"
+			alt="Lista" title="Volver al listado"></a>
+		</a>
+		{# {% if is_granted('edit', pelicula) %} #}
+			<a href="{{ path('place_show', {'id':place.id}) }}">
+				<img height="40" src="{{ asset('images/buttons/show.png') }}"
+				alt="Detalle" title="Detalle"></a>
+			</a>
+		{# {% endif %} #}
 
-    {# {{ include('place/_delete_form.html.twig') }} #}
+		{# {% if is_granted('edit', pelicula) %} #}
+			<a href="{{ path('place_edit', {'id':place.id}) }}">
+				<img height="40" src="{{ asset('images/buttons/update.png') }}"
+				alt="Modificar" title="Modificar"></a>
+			</a>
+		{# {% endif %} #}
 {% endblock %}

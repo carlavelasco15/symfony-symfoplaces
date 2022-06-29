@@ -2,9 +2,16 @@
 
 {% block title %}Place index{% endblock %}
 
+{% block breadcrumb %}
+	{{parent()}}
+	<li class="breadcrumb-item active">Lugares</li>
+
+{% endblock %}
+
+
 {% block main %}
     {{ parent() }}
-    <h1>Place index</h1>
+    <h2 class="my-4">Lista de lugares</h2>
 
     {# include place-list #}
     {% include '/includes/lista_place.html.twig' %}
@@ -18,5 +25,5 @@
 
     %}
 
-    <a href="{{ path('place_create') }}">Create new</a>
+  
 {% endblock %}

@@ -1,23 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Editar{% endblock %}
+{% block title %}Editar
+{% endblock %}
+
+{% block breadcrumb %}
+	{{parent()}}
+	<li class="breadcrumb-item">
+		<a href=" {{ path('place_list') }}">Lugares</a>
+	</li>
+	<li class="breadcrumb-item active" aria-current="page">Editar
+		{{place.name}}</li>
+{% endblock %}
 
 {% block main %}
 
-    {{ parent() }}
-    <p>Edición del lugar <b>{{place.name}}</b>.</p>
+	{{ parent() }}
+	<div class="my-5">
+		<h2>Edición del lugar
+			<b>{{place.name}}</b>.</h2>
+		<h4 class="mt-3">Modificar lugar</h4>
+		{{ form(formularioPlace) }}
+		</div>
 
-    <h2 class="mt-3">Formulario place </h2>
-    {{ form(formularioPlace) }}
 
-    <h2 class="mt-5">Formulario picture</h2>
-    {{ form_start(formularioPicture, {'action': path('picture_create')}) }}
+		{% set pictures = place.getPhoto() %}
+
+		<div class="my-5">
+			<h4 class="my-3">Imagenes de este lugar</h4>
+			<div class="d-flex flex-row flex-wrap">
+				{% for picture in pictures %}
+					<div class="card mx-2" style="width: 18rem;">
+						<div class="text-center my-3">
+							<img class="lista-cover rounded" style="max-width: 200px;" alt="Carátula de {{picture.title}}" title="Carátula de {{picture.title}}" src="{{asset(picture_directory~'/'~(picture.picture ?? 'default.jpg'))}}">
+						</div>
+						<div class="card-body">
+							<h5 class="card-title">{{picture.title}}</h5>
+							<p class="card-text">{{picture.description}}</p>
+							<a href="{{ path('picture_edit', {'id': picture.id}) }}" class="btn btn-warning">Editar</a>
+							<a href="{{ path('picture_delete', {'id': picture.id}) }}" class="btn btn-danger">Eliminar</a>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+
+<div class="row my-5">
+    <h4 class="mt-5">Añadir imagen</h4>
+
+    <div class="col-5">
+        {{ form_start(formularioPicture, {'action': path('picture_create')}) }}
         <input type="hidden" name="place_id" id="place_id" value={{place.id}}>
-    {{ form_end(formularioPicture) }}
-    
-    {# <a href="{{ path('place_list') }}">back to list</a> #}
+        {{ form_end(formularioPicture) }}
+    </div>
 
-    {# <a href="{{ path('place_edit', {'id': place.id}) }}">edit</a> #}
+    <div class="col-7 text-center">
+        <h4 class="my-2">Previsualización</h4>
+        <figure class="my-2 p-2">
+            <img id="preview" class="rounded border movie-cover" style="max-width: 220px" src="{{ asset(picture_directory~'/'~(place.picture ?? 'default.jpg')) }}">
 
-    {# {{ include('place/_delete_form.html.twig') }} #}
-{% endblock %}
+        </figure>
+
+        <script src="{{ asset('/js/previewImageModify.js') }}"></script>
+    </div>
+</div>
+
+<div class="text-center">
+	<a href="{{ path('place_list') }}">
+		<img height="40" src="{{ asset('images/buttons/list.png') }}" alt="Lista" title="Volver al listado"></a>
+</a>
+{# {% if is_granted('edit', pelicula) %} #}
+<a href="{{ path('place_show', {'id':place.id}) }}">
+	<img height="40" src="{{ asset('images/buttons/show.png') }}" alt="Detalle" title="Detalle"></a></a>{# {% endif %} #}{# {% if is_granted('delete', place) %} #}<a href="{{ path('place_delete', {'id':place.id}) }}">
+<img height="40" src="{{ asset('images/buttons/delete.png') }}" alt="Borrar" title="Borrar"></a></a>{# {% endif %} #}</div>{% endblock %}

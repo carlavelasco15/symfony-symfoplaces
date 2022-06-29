@@ -14,7 +14,7 @@ parameters:
     app.users_pics.root: '%kernel.project_dir%/%app.users_pics%'
 
     app.portada_results: 5
-    app.page_results: 2
+    app.page_results: 10
 
 services:
     # default configuration for services in *this* file

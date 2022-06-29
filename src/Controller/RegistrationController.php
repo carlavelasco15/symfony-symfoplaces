@@ -63,7 +63,7 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('no-reply@symfofilms.com', 'Registro de usuarios'))
+                    ->from(new Address('no-reply@symplaces.com', 'Registro de usuarios'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('email/register_verification.html.twig')
@@ -118,7 +118,7 @@ class RegistrationController extends AbstractController
         $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
             (new TemplatedEmail())
             ->from(new Address(
-                    'no-reply@symfofilms.robertsallent.com',
+                    'no-reply@symfoplaces.com',
                     'Registro de usuarios'))
             ->to($user->getEmail())
             ->subject('Por favor, confirma tu email')
@@ -156,9 +156,9 @@ class RegistrationController extends AbstractController
                 $uploader->remove($usuario->getPicture());
 
 
-            /* foreach ($usuario->getPeliculas() as $pelicula) {
-                $usuario->removePelicula($pelicula);
-            } */
+            foreach ($usuario->getPlaces() as $pelicula) {
+                $usuario->removePlace($pelicula);
+            }
 
             
             $entityManager->remove($usuario);

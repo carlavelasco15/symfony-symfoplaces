@@ -13,7 +13,9 @@ class DeletePlaceFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Eliminar', SubmitType::class)
+            ->add('Eliminar', SubmitType::class, [
+                'attr' => ['class' => 'btn btn-danger my-3']
+            ])
         ;
     }
 

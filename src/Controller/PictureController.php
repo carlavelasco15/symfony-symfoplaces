@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,11 +74,12 @@ class PictureController extends AbstractController
         
         $form = $this->createForm(PictureType::class, $place);
         $form->handleRequest($request);
-
+        
         if($form->isSubmitted() && $form->isValid()) {
-
+            
+       
             $file = $form->get('picture')->getData();
-
+            
             if($file)
                 $fichero = $uploader->replace($file, $fichero);
             
@@ -88,7 +88,7 @@ class PictureController extends AbstractController
             $pictureRepository->add($place, true);
             $this->addFlash('success', 'Imagen actualizada con éxito.');
 
-            return $this->redirectToRoute('picture_show', ['id' => $place->getId()]);
+            return $this->redirectToRoute('place_edit', ['id' => $place->getPlace()->getId()]);
         }
 
         return $this->render('picture/edit.html.twig', [
@@ -113,10 +113,14 @@ class PictureController extends AbstractController
             if($place->getPicture())
                 $uploader->remove($place->getPicture());
 
+            $id_place = $place->getPlace()->getId();
+
             $pictureRepository->remove($place, true);
             $this->addFlash('success', "Se ha eliminado la imagen correctamente.");
 
-            return $this->redirectToRoute('picture_list');
+            return $this->redirectToRoute('place_edit', [
+                'id' => $id_place
+            ]);
         }
 
         return $this->render('picture/delete.html.twig', [
@@ -133,5 +137,38 @@ class PictureController extends AbstractController
         return $this->render('picture/show.html.twig', [
             'place' => $place
         ]);
+    }
+
+    #[Route('/show/{id}', name: 'picture_delete_cover')]
+    public function deleteImagen(
+        Picture $place): Response
+    {
+        return $this->render('picture/show.html.twig', [
+            'place' => $place
+        ]);
+    }
+
+
+    #[Route('/picture/cover/delete/{id}', name: 'picture_delete_cover')]
+    public function deleteCover(
+        Picture $picture,
+        Request $request,
+        FileService $fileService,
+        PictureRepository $pictureRepository
+    ):Response {
+        
+        if($pic = $picture->getPicture()) {
+            $fileService->remove($pic);
+
+            $picture->setPicture(NULL);
+
+            $pictureRepository->add($picture, true);
+
+            $this->addFlash('success', 'La carátula de ' . $picture->getTitle() . ' fue borrada.');
+        }
+        
+            return $this->redirectToRoute('picture_edit', [
+                'id' => $picture->getId()
+                ]);
     }
 }

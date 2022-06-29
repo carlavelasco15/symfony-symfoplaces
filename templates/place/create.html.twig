@@ -2,12 +2,19 @@
 
 {% block title %}Editar{% endblock %}
 
+{% block breadcrumb %}
+	{{parent()}}
+    <li class="breadcrumb-item"><a href=" {{ path('place_list') }}">Lugares</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Crear</li>
+{% endblock %}
+
 {% block main %}
 
     {{ parent() }}
     <p>Creación de un lugar</b>.</p>
 
     {{ form(formulario) }}
+    
     
     {# <a href="{{ path('place_list') }}">back to list</a> #}
 

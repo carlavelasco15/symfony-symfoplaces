@@ -11,6 +11,7 @@ use App\Entity\Comment;
 
 use App\Form\DeleteCommentFormType;
 use App\Form\CommentType;
+use App\Repository\PlaceRepository;
 
 #[Route('/comment')]
 class CommentController extends AbstractController
@@ -26,28 +27,31 @@ class CommentController extends AbstractController
     #[Route('/create', name: 'comment_create')]
     public function create(
         Request $request,
-        CommentRepository $commentRepository): Response
+        CommentRepository $commentRepository,
+        PlaceRepository $placeRepository): Response
     {
 
         $place = new Comment();
         $form = $this->createForm(CommentType::class, $place);
         $form->handleRequest($request);
 
+        $lugar_id = $request->request->get('place_id');
+        $lugar = $placeRepository->find($lugar_id);
+
         if($form->isSubmitted() && $form->isValid()) {
 
-            /* $actor->setUser($this->getUser()); */
-
+            $place->setPlace($lugar);
             $place->setDate(new \DateTime());
+            $place->setUser($this->getUser());
 
             $commentRepository->add($place, true);
             $this->addFlash('success', 'Comentario guardado con éxito.');
 
-            return $this->redirectToRoute('comment_show', ['id' => $place->getId()]);
+        } else {
+            $this->addFlash('error', 'No se pudo añadir el comentario.');
         }
 
-        return $this->render('comment/create.html.twig', [
-            'formulario' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('place_show', ['id' => $place->getPlace()->getId()]);
     }
 
 

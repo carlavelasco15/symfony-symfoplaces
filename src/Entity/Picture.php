@@ -13,7 +13,7 @@ class Picture
     #[ORM\Column(type: 'integer')]
     private $id;
     
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $picture;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -35,7 +35,7 @@ class Picture
         return $this->picture;
     }
 
-    public function setPicture(string $picture): self
+    public function setPicture(?string $picture): self
     {
         $this->picture = $picture;
 

@@ -2,46 +2,114 @@
 
 {% block title %}Place{% endblock %}
 
+{% block breadcrumb %}
+	{{parent()}}
+    <li class="breadcrumb-item"><a href=" {{ path('place_list') }}">Lugares</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{place.name}}</li>
+{% endblock %}
+
 {% block main %}
     {{ parent() }}
-    <h1>Place</h1>
+    <h2>{{ place.name }}</h2>
+	<p>Detalles del lugar {{ place.name }},
+	 en <b>SymfoPlaces</b>.</p>
+	
+	<p>A lo largo de las próximas semanas iremos editando este ejemplo para
+	dotarlo de neuvas características y funcionalidades.</p>
+	
+	<div class="bg-light border my-3 p-3 row align-items-center justify-content-center">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ place.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ place.name }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ place.description }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ place.type }}</td>
-            </tr>
-            <tr>
-                <th>Valoration</th>
-                <td>{{ place.valoration }}</td>
-            </tr>
-            <tr>
-                <th>Country</th>
-                <td>{{ place.country }}</td>
-            </tr>
-            <tr>
-                <th>Village</th>
-                <td>{{ place.village }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<div class="col m-3 p-3 text-start">
+			<p><b>ID</b>: {{ place.id }}</p>
+			<p><b>Name</b>: {{ place.name }}</p>
+			<p><b>Tipo</b>: {{ place.type }}</p>
+			<p><b>País</b>: {{ place.country }}</p>
+			<p><b>Localidad</b>: {{ place.village }}</p>
 
-    <a href="{{ path('place_list') }}">back to list</a>
+			<p><b>Valoracion</b>:
+				{{ place.valoration ? place.valoration~'/5' : 'Sin valorar' }}</p>
+			{% if place.getUser() %}
+				<p>Información aportada por
+					<i>{{ place.getUser().displayname }}</i>
+				</p>
+			{% endif %}
+			{% if place.description %}
+				<h2>Description:</h2>
+				<p>{{ place.description}}</p>
+			{% endif %}
+	</div>
 
-    {# <a href="{{ path('place_edit', {'id': place.id}) }}">edit</a> #}
+	<div class="col m-3 p-3 text-center bg-light">
+		<img class="rounded border movie-cover" style="max-width: 240px"
+			alt="Carátula de {{place.name}}"
+			title="Carátula de {{place.name}}"
+			src="{{ asset(picture_directory~'/'~(place.getPhoto()[0].picture ?? 'default.jpg'))}}">
+	</div>
 
-    {# {{ include('place/_delete_form.html.twig') }} #}
+{% set pictures = place.getPhoto() %}
+{% if pictures|length > 0 %}
+	<div class="my-5">
+            <h4 class="my-3">Imagenes de este lugar</h4>
+            <div class="d-flex flex-row flex-wrap">
+                {% for picture in pictures %}
+                    <div class="card mx-2 my-3" style="width: 18rem;">
+                        <div class="text-center my-3">
+                            <img class="lista-cover rounded" style="max-width: 200px;" alt="Carátula de {{picture.title}}" title="Carátula de {{picture.title}}" src="{{asset(picture_directory~'/'~(picture.picture ?? 'default.jpg'))}}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{picture.title}}</h5>
+                            <p class="card-text">{{picture.description}}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+{% endif %}
+
+{% set comments = place.getComment() %}
+	<div class="my-5">
+            <h4 class="my-3">Comentarios</h4>
+
+			{% if comments|length > 0 %}
+               {% for comment in comments %}
+                    <div class="card mx-2 my-3 py-3 w-75">
+                        <div class="card-body">
+                            <h5 class="card-title">{{comment.getUser().displayname}}</h5>
+                            <p class="card-text">{{comment.description}}</p>
+							<p style="font-size: 14px; text-align: right; margin: 0px;">{{comment.date|date('d/m/Y')}}</p>
+							<a href="{{ path('comment_edit', {'id': 1}) }}" class="btn btn-warning">Editar</a>
+							<a href="{{ path('comment_delete', {'id': 1}) }}" class="btn btn-danger">Eliminar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+			{% endif %}
+				<div class="mx-2 my-3 w-75">
+            	<h5 class="mt-5">¡Escribe tu comentario!</h5>
+					{{form_start(commentForm, {'action': path('comment_create')})}}
+						<input type="hidden" name="place_id" value={{place.id}}>
+						{{form(commentForm)}}
+					{{form_end(commentForm)}}
+				</div>
+        </div>
+
+	<div class="text-center">
+		<a href="{{  path('place_list') }}">
+			<img height="40" src="{{ asset('images/buttons/list.png') }}"
+			alt="Lista" title="Volver al listado"></a>
+		</a>
+		{# {% if is_granted('edit', pelicula) %} #}
+			<a href="{{ path('place_edit', {'id':place.id}) }}">
+				<img height="40" src="{{ asset('images/buttons/update.png') }}"
+				alt="Modificar" title="Modificar"></a>
+			</a>
+		{# {% endif %} #}
+
+		{# {% if is_granted('delete', place) %} #}
+			<a href="{{  path('place_delete', {'id':place.id}) }}">
+				<img height="40" src="{{ asset('images/buttons/delete.png') }}"
+				alt="Borrar" title="Borrar"></a>
+			</a>
+		{# {% endif %} #}
+	</div>
+
 {% endblock %}

@@ -14,7 +14,7 @@
         <p>La dirección de email {{ app.user.email }} <b>no ha sido verificada</b>.
         Por favor haz clic en
         <a href="{{ path('resend_verification') }}">verificar usuario </a> para completar
-        el proceso de registro y poder acceder a todas las funcionalidades de Symfofilms.</p>
+        el proceso de registro y poder acceder a todas las funcionalidades de SymfoPlaces.</p>
     </div>
     {% endif %} 
 
@@ -48,12 +48,12 @@
                     path('pic_show', {'picture': app.user.picture}) :
                     path('pic_show', {'picture' : 'default.jpg'})}}">
         </div>
-        </div>
-        <div class="my-4">
+        <div class="my-5">
             <h3>Aportaciones</h3>
-            {# {% set peliculas = app.user.getPeliculas() %}
-            <p>Este usuario ha añadido {{ peliculas|length }} películas a SymfoFilms.</p>
-
-            {% include '/includes/lista_peliculas.html.twig' %} #}
+            {% set places = app.user.getPlaces() %}
+            <p class="mb-5">Este usuario ha añadido {{ places|length }} películas a SymfoPlaces.</p>
+            {# include place-list #}
+            {% include '/includes/lista_place.html.twig' %}
         </div>    
+        </div>
 {% endblock %}
